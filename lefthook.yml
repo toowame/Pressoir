@@ -1,0 +1,13 @@
+# Miroir local de la CI (.github/workflows/ci.yml).
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.swift"
+      run: swift format lint --strict {staged_files}
+    build:
+      run: swift build
+pre-push:
+  commands:
+    tests-couverture:
+      run: Scripts/check-coverage.sh 80
