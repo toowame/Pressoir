@@ -23,13 +23,22 @@ else
   echo "› Building PressoirApp ($CONFIG, native only)…"
 fi
 
-swift build -c "$CONFIG" ${ARCHS[@]+"${ARCHS[@]}"} --product PressoirApp
-BINDIR="$(swift build -c "$CONFIG" ${ARCHS[@]+"${ARCHS[@]}"} --product PressoirApp --show-bin-path)"
+# The binary must not carry the builder's home folder (it names the macOS
+# account): source paths are rewritten to "." and debug symbols stripped below.
+PREFIX_MAP=(-Xswiftc -file-prefix-map -Xswiftc "$ROOT=.")
+swift build -c "$CONFIG" ${ARCHS[@]+"${ARCHS[@]}"} "${PREFIX_MAP[@]}" --product PressoirApp
+BINDIR="$(swift build -c "$CONFIG" ${ARCHS[@]+"${ARCHS[@]}"} "${PREFIX_MAP[@]}" --product PressoirApp --show-bin-path)"
 
 APP="$ROOT/Pressoir.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BINDIR/PressoirApp" "$APP/Contents/MacOS/Pressoir"
+# -S drops the debug map, whose entries hold the absolute object file paths.
+strip -S "$APP/Contents/MacOS/Pressoir"
+if LC_ALL=C grep -aq "$HOME" "$APP/Contents/MacOS/Pressoir"; then
+  echo "✗ The binary still contains $HOME" >&2
+  exit 1
+fi
 [ -f "$ROOT/Resources/AppIcon.icns" ] && cp "$ROOT/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 
 cat > "$APP/Contents/Info.plist" <<'PLIST'
