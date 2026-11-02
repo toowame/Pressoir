@@ -13,3 +13,12 @@ Le domaine (`PressoirCore`) est couvert par `swift test`. La couche système se 
 9. Cliquer ailleurs ou Échap → le panneau se ferme.
 10. Copier un mot de passe depuis 1Password / Trousseau → absent de l'historique.
 11. Quitter puis relancer → l'historique est conservé ; `strings history.enc` ne montre aucun texte copié.
+12. Capture d'écran dans le presse-papier (⌃⇧⌘4) → vignette + « Image · L × H » ; ↩ la colle dans Aperçu › Nouveau depuis le presse-papier.
+13. Recopier la même image → elle remonte, pas de doublon.
+14. Copier un fichier dans le Finder → rien n'apparaît.
+15. Supprimer l'image (⌘⌫) → son fichier disparaît de `images/`.
+16. Copier `AKIAIOSFODNN7EXAMPLE` → n'apparaît pas. Copier un mot de passe dans 1Password → n'apparaît pas.
+17. Ouvrir le panneau dans TextEdit, cliquer dans une autre app, puis ↩ dans le panneau → rien n'est collé ailleurs.
+18. Champ mot de passe focalisé (Safari) → ↩ ne colle pas automatiquement.
+19. Refuser l'accès au Trousseau → le menu affiche « Trousseau inaccessible », l'historique existant est intact au lancement suivant.
+

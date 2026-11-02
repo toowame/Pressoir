@@ -1,7 +1,8 @@
 import AppKit
+import PressoirCore
 import ServiceManagement
 
-/// The menu-bar icon: open, clear, launch at login, quit.
+/// The menu-bar icon: vault warning if any, open, clear, launch at login, quit.
 @MainActor
 final class StatusMenu: NSObject {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -19,6 +20,12 @@ final class StatusMenu: NSObject {
 
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
+        if let warning = Labels.vaultWarning(model.vaultStatus) {
+            let notice = NSMenuItem(title: warning, action: nil, keyEquivalent: "")
+            notice.isEnabled = false
+            menu.addItem(notice)
+            menu.addItem(.separator())
+        }
         menu.addItem(entry(Labels.menuOpen + "  " + Shortcut.openHistory.label, #selector(open)))
         menu.addItem(entry(Labels.menuClear, #selector(clear)))
         menu.addItem(.separator())
@@ -47,7 +54,7 @@ final class StatusMenu: NSObject {
         do {
             if service.status == .enabled { try service.unregister() } else { try service.register() }
         } catch {
-            Log.write("Ouverture au démarrage impossible à modifier : \(error)")
+            Log.write("Ouverture au démarrage impossible à modifier : \(ErrorSummary.of(error))")
         }
         launchAtLogin.state = service.status == .enabled ? .on : .off
     }

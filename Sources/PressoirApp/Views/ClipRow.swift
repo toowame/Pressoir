@@ -1,8 +1,11 @@
+import AppKit
 import PressoirCore
 import SwiftUI
 
 struct ClipRow: View {
     let item: ClipItem
+    /// Only for an image entry; nil while unavailable or for a text.
+    let thumbnail: NSImage?
     let shortcut: Int?
     let isSelected: Bool
     let onChoose: () -> Void
@@ -12,26 +15,21 @@ struct ClipRow: View {
     @State private var isHovered = false
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(alignment: .center, spacing: PanelMetrics.itemSpacing) {
             ShortcutBadge(digit: shortcut)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(ClipPreview.line(for: item.text, maxLength: PanelMetrics.previewLength))
-                    .lineLimit(2)
-                    .foregroundStyle(.primary)
-                LineCountBadge(text: item.text)
-            }
-            Spacer(minLength: 4)
+            ClipRowContent(content: item.content, thumbnail: thumbnail)
+            Spacer(minLength: PanelMetrics.captionSpacing)
             RowActions(
                 isPinned: item.isPinned, isVisible: isHovered || isSelected || item.isPinned,
                 onTogglePin: onTogglePin, onRemove: onRemove)
         }
         .padding(.horizontal, PanelMetrics.padding)
-        .padding(.vertical, 7)
+        .padding(.vertical, PanelMetrics.rowVerticalPadding)
         .background(RowBackground(isSelected: isSelected, isHovered: isHovered))
         .contentShape(Rectangle())
         .onHover { isHovered = $0 }
         .onTapGesture(perform: onChoose)
-        .help(item.text)
+        .help(item.text ?? "")
     }
 }
 
@@ -42,24 +40,7 @@ private struct ShortcutBadge: View {
         Text(digit.map(String.init) ?? " ")
             .font(.caption.monospacedDigit())
             .foregroundStyle(.tertiary)
-            .frame(width: 12)
-    }
-}
-
-/// Only shown for multi-line texts, whose one-line preview hides the line breaks.
-private struct LineCountBadge: View {
-    let text: String
-
-    var body: some View {
-        let lines = ClipPreview.lineCount(of: text)
-        if lines > 1 {
-            HStack(spacing: 6) {
-                Icon(.lines)
-                Text(Labels.lineCount(lines))
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-        }
+            .frame(width: PanelMetrics.shortcutBadgeWidth)
     }
 }
 
@@ -70,7 +51,7 @@ private struct RowActions: View {
     let onRemove: () -> Void
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: PanelMetrics.compactSpacing) {
             IconButton(
                 symbol: isPinned ? .pin : .pinOutline, help: isPinned ? Labels.unpin : Labels.pin,
                 action: onTogglePin
@@ -88,8 +69,11 @@ private struct RowBackground: View {
     let isHovered: Bool
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 7)
-            .fill(isSelected ? Color.accentColor.opacity(0.18) : isHovered ? Color.primary.opacity(0.05) : .clear)
+        RoundedRectangle(cornerRadius: PanelMetrics.rowCornerRadius)
+            .fill(
+                isSelected
+                    ? Color.accentColor.opacity(PanelMetrics.selectedRowOpacity)
+                    : isHovered ? Color.primary.opacity(PanelMetrics.hoveredRowOpacity) : .clear)
     }
 }
 

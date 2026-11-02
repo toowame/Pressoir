@@ -9,6 +9,7 @@ enum AppIcon: String {
     case remove = "xmark"
     case lines = "text.alignleft"
     case empty = "tray"
+    case image = "photo"
 }
 
 struct Icon: View {

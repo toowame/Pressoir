@@ -8,11 +8,15 @@
 - [x] Raccourci global ⇧⌘V, panneau flottant non activant, collage ⌘V auto
 - [x] Clavier : ↑ ↓ ↩, ⌘1–9, ⌘P épingler, ⌘⌫ supprimer, Échap
 - [x] Menu barre : ouvrir, effacer, ouvrir au démarrage, quitter
+- [x] Images copiées : vignettes, collage, un fichier chiffré par image (ADR 0004)
+- [x] Durcissement après revue de sécurité (ADR 0005)
 
 ## À faire
 - [ ] Recette manuelle (docs/TESTING.md)
 - [ ] Raccourci configurable (réglages)
-- [ ] Images et fichiers copiés
-- [ ] Liste d'apps exclues (ex. gestionnaire de mots de passe sans marqueur)
+- [ ] Fichiers copiés (Finder)
+- [ ] Liste d'apps exclues modifiable dans des réglages (la liste par défaut existe)
+- [ ] Signature avec un certificat stable (fin des redemandes Trousseau / Accessibilité)
+- [ ] Expiration automatique des éléments non épinglés (option)
 - [ ] Icône d'app (Resources/AppIcon.icns)
 - [ ] Dépôt GitHub + protection de `main` et `dev`
