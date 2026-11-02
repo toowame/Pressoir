@@ -1,94 +1,183 @@
-<p align="center">
-  <img src="docs/images/logo.png" width="128" height="128" alt="Pressoir icon">
-</p>
+<div align="center">
 
-<h1 align="center">Pressoir</h1>
+**English** · [Français](README.fr.md)
 
-<p align="center">
-  <strong>A clipboard history for macOS, the way Windows does it (Win + V).</strong><br>
-  Press <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>: your recent copies open right under the mouse. Pick one, it is pasted.
-</p>
+<img src="docs/images/logo.png" width="112" height="112" alt="Pressoir icon">
 
-<p align="center">
-  <a href="https://github.com/toowame/Pressoir/actions/workflows/ci.yml"><img src="https://github.com/toowame/Pressoir/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple" alt="macOS 14+">
-  <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
-</p>
+# Pressoir: Win + V for your Mac
 
-<p align="center">
-  <a href="README.fr.md">Lire en français</a>
-</p>
+### A clipboard history that opens right under your mouse.
 
-<p align="center">
-  <img src="docs/images/panel.svg" width="440" alt="Pressoir's history panel: a search field, a selected text entry, an image thumbnail, a pinned link">
-</p>
+**Copy as much as you like. Press ⇧⌘V, pick, it's pasted.**
 
-## Why
+[![CI](https://img.shields.io/github/actions/workflow/status/toowame/Pressoir/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/toowame/Pressoir/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/toowame/Pressoir?style=flat-square&color=8f3b5e)](https://github.com/toowame/Pressoir/releases/latest)
+[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000000?style=flat-square&logo=apple)](#install)
+[![Swift 6](https://img.shields.io/badge/Swift-6-F05138?style=flat-square&logo=swift&logoColor=white)](#build-from-source)
+[![Encrypted at rest](https://img.shields.io/badge/history-AES--256--GCM-2ea44f?style=flat-square)](#privacy-and-security)
+[![MIT license](https://img.shields.io/badge/license-MIT-f4c430?style=flat-square)](LICENSE)
 
-macOS keeps exactly one thing on the clipboard. Copy something new and the previous one is gone.
+[Install](#install) · [How it works](#how-it-works) · [What it keeps](#what-pressoir-keeps-and-what-it-never-does) · [Keyboard](#keyboard) · [Privacy](#privacy-and-security) · [FAQ](#faq) · [Build](#build-from-source)
+
+<kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd>
+
+</div>
+
+> [!IMPORTANT]
+> Download Pressoir only from the [Releases page of toowame/Pressoir](https://github.com/toowame/Pressoir/releases).
+> A clipboard manager sees everything you copy: a look-alike repository or a re-uploaded DMG is not
+> an official build.
+
+<div align="center">
+
+<br />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/panel-dark.svg" />
+  <img src="docs/images/panel-light.svg" width="460" alt="Pressoir's history panel: a search field, a selected text entry, an image thumbnail, a pinned link" />
+</picture>
+
+<br /><br />
+
+</div>
+
+---
+
+macOS keeps exactly one thing on the clipboard: copy something new and the previous one is gone.
 Pressoir quietly remembers your last 50 copies, text and images, and brings them back with one
-shortcut, where your mouse is. No window to manage, no Dock icon, no account, no network.
+shortcut, at the mouse pointer, on whichever screen you are working.
 
-## Features
-
-- **Opens under the mouse.** The panel appears at the pointer and stays on screen near edges and on every display.
-- **Text and images.** Screenshots and copied pictures show as thumbnails and paste back as images.
-- **Keyboard first.** Type to search, <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> to paste, <kbd>⌘1</kbd>…<kbd>⌘9</kbd> for the first nine.
-- **Pins.** Pinned entries stay on top and never expire.
-- **Pastes for you.** The chosen entry goes straight into the app you were using.
-- **Encrypted at rest.** History and images are sealed with AES-256-GCM; the key lives in your Keychain.
-- **Tiny and native.** Swift, AppKit and SwiftUI, no third-party dependency, ~450 KB, Apple Silicon and Intel.
+There is no window to manage, no Dock icon, no account and no network access. The history is
+encrypted on disk, password managers are ignored, and recognisable credentials are never recorded.
+It is a native Swift app of about 450 KB with no third-party dependency.
 
 ## Install
 
 1. Download `Pressoir-x.y.z.dmg` from the [latest release](https://github.com/toowame/Pressoir/releases/latest).
 2. Open it and drag **Pressoir** to **Applications**.
-3. First launch: the app is not notarized by Apple, so macOS blocks it. Right-click Pressoir → **Open**,
+3. The app is not notarized by Apple, so the first launch is blocked. Right-click Pressoir → **Open**,
    or go to **System Settings → Privacy & Security** and click **Open Anyway**.
-4. Pressoir lives in the menu bar (clipboard icon). Turn on **Launch at login** from its menu if you like.
+4. A clipboard icon appears in the menu bar. Turn on **Ouvrir au démarrage** (launch at login) from its menu if you like.
 
-### Permissions
+On first use, macOS asks for two permissions:
 
-| Permission | Why | Without it |
-|---|---|---|
-| **Accessibility** | To type <kbd>⌘V</kbd> into the app you were using | The entry is still copied; press <kbd>⌘V</kbd> yourself |
-| **Keychain** | To store the encryption key of your history | History is kept in memory only, nothing is written |
+| Permission        | Why                                                     | Without it                                             |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| **Accessibility** | To type <kbd>⌘V</kbd> into the app you were using        | The entry is still copied; press <kbd>⌘V</kbd> yourself |
+| **Keychain**      | To read the encryption key of your history (enter your session password, then **Always Allow**) | History is kept in memory only, nothing is written      |
 
 Builds are ad-hoc signed, so macOS may ask for both again after an update.
 
+## How it works
+
+Pressoir watches the pasteboard, filters what it sees, and seals what it keeps. When you press the
+shortcut, it shows the history where your mouse is and pastes your choice into the app that was in
+front.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/flow-dark.svg" />
+  <img src="docs/images/flow-light.svg" alt="Flow: you copy, Pressoir notices, filters and seals the entry on disk; you press Shift-Command-V, the panel opens at the mouse, you pick, it is pasted into the app you were in." />
+</picture>
+
+- macOS has no "clipboard changed" event, so the pasteboard change count is read every 0.5 s.
+- The global shortcut uses `RegisterEventHotKey`, which needs no permission.
+- The panel is a non-activating `NSPanel`: the app underneath keeps the focus and receives the paste.
+
+## What Pressoir keeps (and what it never does)
+
+| Situation                                                                  | What happens                          |
+| -------------------------------------------------------------------------- | ------------------------------------- |
+| Text you copy                                                              | Kept, up to 1 MB per entry            |
+| Images and screenshots                                                     | Kept as images, up to 50 MB or 64 Mpx |
+| The same copy twice                                                        | Moved to the top, not duplicated      |
+| Pinned entries                                                             | Stay on top and never expire          |
+| Copies flagged concealed or transient ([nspasteboard.org](http://nspasteboard.org)) | Never recorded                        |
+| Anything copied from 1Password, Bitwarden, KeePassXC, Passwords, Keychain Access, Dashlane or Enpass | Never recorded                        |
+| GitHub, AWS, Slack, Stripe, Google, OpenAI or Anthropic tokens, JWTs, private keys | Never recorded                        |
+| Content from another Apple device (Universal Clipboard)                    | Never recorded                        |
+| Files copied in the Finder                                                 | Not handled yet                       |
+
 ## Keyboard
 
-| Keys | Action |
-|---|---|
-| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd> | Open / close the history |
-| type | Search (case and accent insensitive, text only) |
-| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Move, paste |
-| <kbd>⌘1</kbd> … <kbd>⌘9</kbd> | Paste entry 1 to 9 |
-| <kbd>⌘P</kbd> | Pin / unpin |
-| <kbd>⌘⌫</kbd> | Delete the entry |
-| <kbd>Esc</kbd> or click outside | Close |
+| Keys                                  | Action                                          |
+| ------------------------------------- | ----------------------------------------------- |
+| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>    | Open / close the history                        |
+| type                                  | Search (case and accent insensitive, text only) |
+| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Move, paste                                     |
+| <kbd>⌘1</kbd> … <kbd>⌘9</kbd>          | Paste entry 1 to 9                              |
+| <kbd>⌘P</kbd>                          | Pin / unpin                                     |
+| <kbd>⌘⌫</kbd>                          | Delete the entry                                |
+| <kbd>Esc</kbd> or click outside        | Close                                           |
 
 ## Privacy and security
 
 Everything stays on your Mac. Pressoir makes no network request.
 
-- **Encrypted storage.** `~/Library/Application Support/Pressoir/` holds `history.enc` and one sealed file per image
-  (random names), AES-256-GCM, owner-only permissions, excluded from Time Machine.
-- **Never recorded:**
-  - copies flagged as concealed or transient by password managers ([nspasteboard.org](http://nspasteboard.org) markers);
-  - anything copied while 1Password, Bitwarden, KeePassXC, Passwords, Keychain Access, Dashlane or Enpass is in front;
-  - recognisable credentials: GitHub, AWS, Slack, Stripe, Google, OpenAI and Anthropic tokens, JWTs, private keys;
-  - content coming from another Apple device (Universal Clipboard), text over 1 MB, images over 50 MB or 64 Mpx.
-- **Careful pasting.** <kbd>⌘V</kbd> is only sent to the app that was in front when you opened the panel, and never into
-  a password field.
-- **Nothing is ever overwritten.** If the history cannot be decrypted (lost key, damaged file), it is moved aside to
-  `quarantaine-<date>/` untouched, and the menu tells you.
+- **Encrypted storage.** `~/Library/Application Support/Pressoir/` holds `history.enc` and one sealed
+  file per image under a random name. AES-256-GCM, owner-only permissions, excluded from Time Machine.
+  The key lives in your login Keychain, is never synced to iCloud and never leaves this Mac.
+- **Careful pasting.** <kbd>⌘V</kbd> is only sent to the app that was in front when you opened the
+  panel, and never into a password field.
+- **Nothing is ever overwritten.** If the history cannot be decrypted (lost key, damaged file), it is
+  moved aside untouched to `quarantaine-<date>/`, and the menu tells you.
 - **Hidden from screen sharing.** The panel does not appear in screenshots or shared screens.
-- The log (`~/Library/Logs/Pressoir.log`) records events and error codes, never what you copied.
+- **Quiet log.** `~/Library/Logs/Pressoir.log` records events and error codes, never what you copied.
 
-Limits worth knowing: a password copied from an app that does not flag it is recorded like any text. Delete it
-with <kbd>⌘⌫</kbd> or use **Clear history** in the menu. The full reasoning is in [`docs/adr/`](docs/adr).
+A password copied from an app that does not flag it is recorded like any other text. Delete it with
+<kbd>⌘⌫</kbd>, or use **Effacer l'historique** (clear history) in the menu. The reasoning behind each choice is in
+[`docs/adr/`](docs/adr).
+
+## FAQ
+
+<details>
+<summary><strong>Why does macOS say the app can't be opened?</strong></summary>
+
+Pressoir is signed ad hoc, not notarized with a paid Apple developer account. Right-click the app and
+choose **Open**, or click **Open Anyway** in **System Settings → Privacy & Security**. You only do
+this once.
+
+</details>
+
+<details>
+<summary><strong>Why does it need Accessibility?</strong></summary>
+
+To send <kbd>⌘V</kbd> to the app you were using, so the entry lands where your cursor is. Without it
+Pressoir still puts the entry on the clipboard; you press <kbd>⌘V</kbd> yourself. The shortcut itself
+needs no permission.
+
+</details>
+
+<details>
+<summary><strong>The menu says the history is locked. What happened?</strong></summary>
+
+Pressoir could not read its key from the Keychain, usually because the Keychain prompt was dismissed or
+appeared while the screen was locked. Nothing is lost and nothing is written in the meantime: quit
+Pressoir, open it again, then enter your session password and click **Always Allow**.
+
+</details>
+
+<details>
+<summary><strong>Does my history sync between my Macs?</strong></summary>
+
+No. The key is stored with "this device only" access, and the history never leaves the Mac it was
+copied on.
+
+</details>
+
+<details>
+<summary><strong>How do I remove everything?</strong></summary>
+
+Quit Pressoir, delete the app, then delete `~/Library/Application Support/Pressoir/`,
+`~/Library/Logs/Pressoir.log` and, in **Keychain Access**, the item "Pressoir — clé de l'historique".
+
+</details>
+
+<details>
+<summary><strong>Is the interface in English?</strong></summary>
+
+Not yet: the interface is in French. Localisation contributions are welcome.
+
+</details>
 
 ## Build from source
 
@@ -104,11 +193,6 @@ Scripts/build-dmg.sh           # drag-to-install .dmg
 open Pressoir.app
 ```
 
-For contributors: `brew install lefthook gitleaks && lefthook install` runs format, build and secret checks before
-each commit, and tests before each push, like the CI.
-
-## How it works
-
 ```
 Sources/
 ├── PressoirCore/   domain, no AppKit: immutable history, capture policy, paste guard,
@@ -117,19 +201,22 @@ Sources/
                     synthetic ⌘V, menu bar, SwiftUI panel.
 ```
 
-- macOS has no "clipboard changed" event: the pasteboard change count is polled every 0.5 s.
-- The global shortcut uses `RegisterEventHotKey`, which needs no permission.
-- The panel is a non-activating `NSPanel`: the app underneath stays in front and receives the paste.
+## Documentation
 
-Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr). Manual test plan: [`docs/TESTING.md`](docs/TESTING.md).
+- [Architecture decisions](docs/adr): native Swift, sensitive data, encryption, images, hardening, publication.
+- [Manual test plan](docs/TESTING.md): the checks that unit tests cannot cover.
+- [Roadmap](docs/TODO-PRESSOIR.md): configurable shortcut and excluded apps, Finder files, optional expiry, stable code signing.
 
-## Roadmap
+Report vulnerabilities through [SECURITY.md](SECURITY.md).
 
-- Configurable shortcut and excluded apps
-- Copied files (Finder)
-- Optional expiry of unpinned entries
-- Signed and notarized builds
+## Contributing
+
+[Open an issue](https://github.com/toowame/Pressoir/issues) to report a bug or suggest a feature, or
+[send a pull request](https://github.com/toowame/Pressoir/pulls).
+
+`brew install lefthook gitleaks && lefthook install` runs the same checks as the CI on your machine:
+format, build and secret scan before each commit, tests and coverage before each push.
 
 ## License
 
-[MIT](LICENSE). Interface in French; contributions to localise it are welcome.
+[MIT](LICENSE)
