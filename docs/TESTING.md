@@ -13,3 +13,7 @@ Le domaine (`PressoirCore`) est couvert par `swift test`. La couche système se 
 9. Cliquer ailleurs ou Échap → le panneau se ferme.
 10. Copier un mot de passe depuis 1Password / Trousseau → absent de l'historique.
 11. Quitter puis relancer → l'historique est conservé ; `strings history.enc` ne montre aucun texte copié.
+12. Capture d'écran dans le presse-papier (⌃⇧⌘4) → vignette + « Image · L × H » ; ↩ la colle dans Aperçu › Nouveau depuis le presse-papier.
+13. Recopier la même image → elle remonte, pas de doublon.
+14. Copier un fichier dans le Finder → rien n'apparaît.
+15. Supprimer l'image (⌘⌫) → son fichier disparaît de `images/`.

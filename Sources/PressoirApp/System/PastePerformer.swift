@@ -2,26 +2,42 @@ import AppKit
 import ApplicationServices
 import Carbon.HIToolbox
 
-/// Puts a text on the pasteboard and, if allowed, types ⌘V into the frontmost app.
-/// Synthesising keystrokes needs the Accessibility permission; without it the text
-/// is still copied, so a manual ⌘V works.
+/// What goes back on the pasteboard when an entry is chosen.
+enum PastePayload {
+    case text(String)
+    case png(Data)
+}
+
+/// Puts the chosen entry on the pasteboard and, if allowed, types ⌘V into the
+/// frontmost app. Synthesising keystrokes needs the Accessibility permission;
+/// without it the entry is still copied, so a manual ⌘V works.
 @MainActor
 struct PastePerformer {
     /// Lets the panel finish closing so the keystroke lands in the previous app.
     private static let pasteDelay: Duration = .milliseconds(60)
 
-    func paste(_ text: String) {
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(text, forType: .string)
+    func paste(_ payload: PastePayload) {
+        write(payload, to: .general)
 
         guard isTrusted(prompting: true) else {
-            Log.write("Accessibilité non accordée : texte copié, collage automatique ignoré")
+            Log.write("Accessibilité non accordée : élément copié, collage automatique ignoré")
             return
         }
         Task { @MainActor in
             try? await Task.sleep(for: Self.pasteDelay)
             Self.postCommandV()
+        }
+    }
+
+    private func write(_ payload: PastePayload, to pasteboard: NSPasteboard) {
+        pasteboard.clearContents()
+        switch payload {
+        case .text(let text):
+            pasteboard.setString(text, forType: .string)
+        case .png(let data):
+            // TIFF too: older apps (and some Office builds) only accept TIFF.
+            pasteboard.setData(data, forType: .png)
+            if let tiff = NSImage(data: data)?.tiffRepresentation { pasteboard.setData(tiff, forType: .tiff) }
         }
     }
 

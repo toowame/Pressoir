@@ -44,7 +44,7 @@ final class PanelController {
 
     private func choose(_ item: ClipItem) {
         close()
-        paster.paste(item.text)
+        model.payload(for: item).map(paster.paste)
     }
 
     private func visibleItems() -> [ClipItem] {

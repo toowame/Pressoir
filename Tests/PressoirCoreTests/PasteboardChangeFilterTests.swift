@@ -4,30 +4,53 @@ import Testing
 
 @Suite("Détection des nouvelles copies")
 struct PasteboardChangeFilterTests {
-    private func snapshot(_ count: Int, _ text: String?, types: Set<String> = []) -> PasteboardSnapshot {
-        PasteboardSnapshot(changeCount: count, text: text, types: types)
-    }
+    private let text = "public.utf8-plain-text"
+    private let png = "public.png"
+    private let tiff = "public.tiff"
+    private let fileURL = "public.file-url"
 
     @Test("Le contenu présent au démarrage n'est pas capturé")
     func ignoresInitialContent() {
         let filter = PasteboardChangeFilter(lastChangeCount: 5)
 
-        #expect(filter.evaluate(snapshot(5, "déjà là")).captured == nil)
+        #expect(filter.evaluate(changeCount: 5, types: [text]).kind == nil)
     }
 
-    @Test("Un nouveau changeCount avec du texte est capturé")
+    @Test("Un nouveau changeCount avec du texte demande le texte")
     func capturesNewText() {
-        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(snapshot(6, "nouveau"))
+        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: [text])
 
-        #expect(result.captured == "nouveau")
+        #expect(result.kind == .text)
         #expect(result.filter.lastChangeCount == 6)
     }
 
-    @Test("Une copie sans texte (image, fichier) avance le compteur sans rien capturer")
-    func advancesWithoutText() {
-        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(snapshot(6, nil))
+    @Test(
+        "Une image seule (capture d'écran, copie depuis Aperçu) demande l'image",
+        arguments: [
+            "public.png", "public.tiff",
+        ])
+    func capturesImage(type: String) {
+        #expect(PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: [type]).kind == .image)
+    }
 
-        #expect(result.captured == nil)
+    @Test("Texte et image ensemble (copie depuis Word, Excel) : le texte l'emporte")
+    func textWinsOverImage() {
+        #expect(PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: [png, text]).kind == .text)
+    }
+
+    @Test("Un fichier copié dans le Finder (avec son icône en TIFF) n'est pas pris pour une image")
+    func finderFileIsNotAnImage() {
+        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: [fileURL, tiff])
+
+        #expect(result.kind == nil)
+        #expect(result.filter.lastChangeCount == 6)
+    }
+
+    @Test("Un type inconnu avance le compteur sans rien capturer")
+    func unknownTypeAdvances() {
+        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: ["com.example.x"])
+
+        #expect(result.kind == nil)
         #expect(result.filter.lastChangeCount == 6)
     }
 
@@ -40,9 +63,9 @@ struct PasteboardChangeFilterTests {
             "com.agilebits.onepassword",
         ])
     func skipsSensitiveTypes(type: String) {
-        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(snapshot(6, "secret", types: [type]))
+        let result = PasteboardChangeFilter(lastChangeCount: 5).evaluate(changeCount: 6, types: [text, png, type])
 
-        #expect(result.captured == nil)
+        #expect(result.kind == nil)
         #expect(result.filter.lastChangeCount == 6)
     }
 }

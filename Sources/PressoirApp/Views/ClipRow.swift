@@ -1,8 +1,11 @@
+import AppKit
 import PressoirCore
 import SwiftUI
 
 struct ClipRow: View {
     let item: ClipItem
+    /// Only for an image entry; nil while unavailable or for a text.
+    let thumbnail: NSImage?
     let shortcut: Int?
     let isSelected: Bool
     let onChoose: () -> Void
@@ -12,14 +15,9 @@ struct ClipRow: View {
     @State private var isHovered = false
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(alignment: .center, spacing: 8) {
             ShortcutBadge(digit: shortcut)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(ClipPreview.line(for: item.text, maxLength: PanelMetrics.previewLength))
-                    .lineLimit(2)
-                    .foregroundStyle(.primary)
-                LineCountBadge(text: item.text)
-            }
+            ClipRowContent(content: item.content, thumbnail: thumbnail)
             Spacer(minLength: 4)
             RowActions(
                 isPinned: item.isPinned, isVisible: isHovered || isSelected || item.isPinned,
@@ -31,7 +29,7 @@ struct ClipRow: View {
         .contentShape(Rectangle())
         .onHover { isHovered = $0 }
         .onTapGesture(perform: onChoose)
-        .help(item.text)
+        .help(item.text ?? "")
     }
 }
 
@@ -43,23 +41,6 @@ private struct ShortcutBadge: View {
             .font(.caption.monospacedDigit())
             .foregroundStyle(.tertiary)
             .frame(width: 12)
-    }
-}
-
-/// Only shown for multi-line texts, whose one-line preview hides the line breaks.
-private struct LineCountBadge: View {
-    let text: String
-
-    var body: some View {
-        let lines = ClipPreview.lineCount(of: text)
-        if lines > 1 {
-            HStack(spacing: 6) {
-                Icon(.lines)
-                Text(Labels.lineCount(lines))
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-        }
     }
 }
 

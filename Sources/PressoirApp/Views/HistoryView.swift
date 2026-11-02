@@ -43,4 +43,7 @@ enum PanelMetrics {
     static let rowSpacing: CGFloat = 2
     static let previewLength = 90
     static let shortcutCount = 9
+    static let thumbnailHeight: CGFloat = 64
+    static let thumbnailMaxWidth: CGFloat = 220
+    static let thumbnailCornerRadius: CGFloat = 4
 }

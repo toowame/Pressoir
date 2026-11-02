@@ -2,7 +2,7 @@
 
 L'historique du presse-papier façon Windows (Win+V), pour macOS.
 
-**⇧⌘V** ouvre, sous la souris, la liste des derniers textes copiés. Choisissez-en un : il est collé dans l'app au premier plan.
+**⇧⌘V** ouvre, sous la souris, la liste des derniers textes et images copiés. Choisissez-en un : il est collé dans l'app au premier plan.
 
 | Touche | Action |
 |---|---|
