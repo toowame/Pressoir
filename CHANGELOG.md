@@ -3,7 +3,10 @@
 All notable changes to Pressoir. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
-## [0.3.0] - 2026-11-02
+## [1.0.0] - 2026-11-02
+
+First stable release: the storage format, the settings and the menu are not expected to change in a
+breaking way from here.
 
 ### Added
 
@@ -63,7 +66,7 @@ First public release.
 - History encrypted with AES-256-GCM, key in the Keychain.
 - Menu bar item with **Launch at login** and **Clear history**.
 
-[0.3.0]: https://github.com/toowame/Pressoir/compare/v0.2.1...v0.3.0
+[1.0.0]: https://github.com/toowame/Pressoir/compare/v0.2.1...v1.0.0
 [0.2.1]: https://github.com/toowame/Pressoir/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/toowame/Pressoir/releases/tag/v0.2.0
 [0.1.0]: https://github.com/toowame/Pressoir/blob/main/CHANGELOG.md#010---2026-10-23
