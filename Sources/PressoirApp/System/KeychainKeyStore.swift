@@ -10,9 +10,11 @@ import Security
 struct KeychainKeyStore: KeyStore {
     private static let service = "io.github.toowame.Pressoir"
     private static let account = "history-encryption-key"
+    private static let label = "Pressoir — clé de l'historique"
 
     func existingKey() throws(HistoryStoreError) -> SymmetricKey? {
-        try Self.read().map(SymmetricKey.init(data:))
+        if let current = try Self.read() { return SymmetricKey(data: current) }
+        return try Self.adoptKeyFromEarlierIdentifier().map(SymmetricKey.init(data:))
     }
 
     func createKey() throws(HistoryStoreError) -> SymmetricKey {
@@ -34,8 +36,9 @@ struct KeychainKeyStore: KeyStore {
         [kSecClass: kSecClassGenericPassword, kSecAttrService: service, kSecAttrAccount: account]
     }
 
-    private static func read() throws(HistoryStoreError) -> Data? {
+    private static func read(service name: String = service) throws(HistoryStoreError) -> Data? {
         var query = baseQuery
+        query[kSecAttrService] = name
         query[kSecReturnData] = true
         query[kSecMatchLimit] = kSecMatchLimitOne
         var result: CFTypeRef?
@@ -47,11 +50,48 @@ struct KeychainKeyStore: KeyStore {
         }
     }
 
+    /// Builds made before the app identifier changed stored the key under another
+    /// service name. It is found by its account and label, copied under the current
+    /// service, and the old entry is removed only once the copy exists.
+    private static func adoptKeyFromEarlierIdentifier() throws(HistoryStoreError) -> Data? {
+        guard let earlier = try earlierEntry() else { return nil }
+        let status = add(earlier.data)
+        guard status == errSecSuccess || status == errSecDuplicateItem else {
+            Log.write("Reprise de la clé sous le nouvel identifiant impossible (OSStatus \(status))")
+            return earlier.data
+        }
+        let removal: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword, kSecAttrService: earlier.service, kSecAttrAccount: account,
+        ]
+        let removed = SecItemDelete(removal as CFDictionary)
+        Log.write("Clé reprise sous le nouvel identifiant (ancienne entrée supprimée : OSStatus \(removed))")
+        return earlier.data
+    }
+
+    /// macOS refuses to return the data of several items at once (errSecParam):
+    /// the matching entries are listed by attributes, then the one key is read.
+    private static func earlierEntry() throws(HistoryStoreError) -> (service: String, data: Data)? {
+        let listing: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword, kSecAttrAccount: account, kSecAttrLabel: label,
+            kSecReturnAttributes: true, kSecMatchLimit: kSecMatchLimitAll,
+        ]
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(listing as CFDictionary, &result)
+        guard status != errSecItemNotFound else { return nil }
+        guard status == errSecSuccess, let entries = result as? [[CFString: Any]] else {
+            throw .keyUnavailable("recherche de l'ancienne clé, OSStatus \(status)")
+        }
+        let services = entries.compactMap { $0[kSecAttrService] as? String }.filter { $0 != service }
+        guard let earlier = services.first else { return nil }
+        guard let data = try read(service: earlier) else { return nil }
+        return (earlier, data)
+    }
+
     private static func add(_ data: Data) -> OSStatus {
         var attributes = baseQuery
         attributes[kSecValueData] = data
         attributes[kSecAttrAccessible] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-        attributes[kSecAttrLabel] = "Pressoir — clé de l'historique"
+        attributes[kSecAttrLabel] = label
         return SecItemAdd(attributes as CFDictionary, nil)
     }
 }
