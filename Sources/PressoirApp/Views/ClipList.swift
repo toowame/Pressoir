@@ -1,3 +1,4 @@
+import AppKit
 import PressoirCore
 import SwiftUI
 
@@ -14,6 +15,7 @@ struct ClipList: View {
                     ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         ClipRow(
                             item: item,
+                            thumbnail: thumbnail(for: item),
                             shortcut: index < PanelMetrics.shortcutCount ? index + 1 : nil,
                             isSelected: index == selectedIndex,
                             onChoose: { onChoose(item) },
@@ -30,5 +32,10 @@ struct ClipList: View {
                 proxy.scrollTo(items[selectedIndex].id)
             }
         }
+    }
+
+    private func thumbnail(for item: ClipItem) -> NSImage? {
+        guard case .image(let ref) = item.content else { return nil }
+        return model.thumbnail(for: ref)
     }
 }

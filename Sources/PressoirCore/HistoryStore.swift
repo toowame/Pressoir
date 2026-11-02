@@ -18,11 +18,10 @@ public protocol EncryptionKeyProvider: Sendable {
     func key() throws(HistoryStoreError) -> SymmetricKey
 }
 
-/// Adapter: the history as one AES-256-GCM sealed file (random nonce per save,
+/// Adapter: the history as one sealed file (see `SealedFile`: AES-256-GCM, random nonce per save,
 /// authenticated, so a tampered or foreign file is rejected), readable by the
 /// user only. Nothing copied ever reaches the disk in clear.
 public struct EncryptedHistoryStore: HistoryStore {
-    private static let privatePermissions = 0o600
 
     private let fileURL: URL
     private let keyProvider: any EncryptionKeyProvider
@@ -42,8 +41,7 @@ public struct EncryptedHistoryStore: HistoryStore {
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
         let key = try keyProvider.key()
         do {
-            let box = try AES.GCM.SealedBox(combined: Data(contentsOf: fileURL))
-            return try HistoryCodec.decode(AES.GCM.open(box, using: key))
+            return try HistoryCodec.decode(SealedFile.read(fileURL, key: key))
         } catch {
             throw .unreadable("\(fileURL.lastPathComponent): \(error)")
         }
@@ -52,14 +50,7 @@ public struct EncryptedHistoryStore: HistoryStore {
     public func save(_ history: ClipHistory) throws(HistoryStoreError) {
         let key = try keyProvider.key()
         do {
-            guard let sealed = try AES.GCM.seal(HistoryCodec.encode(history), using: key).combined else {
-                throw HistoryStoreError.unwritable("nonce non standard")
-            }
-            try FileManager.default.createDirectory(
-                at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try sealed.write(to: fileURL, options: [.atomic, .completeFileProtection])
-            try FileManager.default.setAttributes(
-                [.posixPermissions: Self.privatePermissions], ofItemAtPath: fileURL.path)
+            try SealedFile.write(HistoryCodec.encode(history), to: fileURL, key: key)
         } catch {
             throw .unwritable("\(fileURL.lastPathComponent): \(error)")
         }

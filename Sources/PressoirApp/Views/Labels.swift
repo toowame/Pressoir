@@ -2,7 +2,7 @@
 enum Labels {
     static let searchPlaceholder = "Rechercher dans l'historique"
     static let emptyTitle = "Rien de copié pour l'instant"
-    static let emptyHint = "Copiez un texte (⌘C), il apparaîtra ici."
+    static let emptyHint = "Copiez un texte ou une image (⌘C), il apparaîtra ici."
     static let noMatch = "Aucun résultat"
     static let footer = "↩ coller · ⌘1–9 · ⌘P épingler · ⌘⌫ supprimer"
     static let pin = "Épingler"
@@ -15,4 +15,6 @@ enum Labels {
     static let menuQuit = "Quitter Pressoir"
 
     static func lineCount(_ count: Int) -> String { "\(count) lignes" }
+
+    static func imageSize(width: Int, height: Int) -> String { "Image · \(width) × \(height)" }
 }

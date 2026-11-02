@@ -11,10 +11,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenu: StatusMenu?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let store = EncryptedHistoryStore(
-            fileURL: EncryptedHistoryStore.defaultLocation(), keyProvider: KeychainKeyProvider())
+        let keys = KeychainKeyProvider()
+        let store = EncryptedHistoryStore(fileURL: EncryptedHistoryStore.defaultLocation(), keyProvider: keys)
+        let imageStore = EncryptedImageStore(directory: EncryptedImageStore.defaultDirectory(), keyProvider: keys)
         Self.migratePlaintextHistory(into: store)
-        let model = HistoryModel(store: store)
+        let model = HistoryModel(store: store, imageStore: imageStore)
         let panel = PanelController(model: model, paster: PastePerformer())
         let monitor = ClipboardMonitor { model.record($0) }
 
