@@ -46,4 +46,14 @@ enum PanelMetrics {
     static let thumbnailHeight: CGFloat = 64
     static let thumbnailMaxWidth: CGFloat = 220
     static let thumbnailCornerRadius: CGFloat = 4
+    static let rowCornerRadius: CGFloat = 7
+    static let rowVerticalPadding: CGFloat = 7
+    static let footerVerticalPadding: CGFloat = 6
+    static let itemSpacing: CGFloat = 8
+    static let compactSpacing: CGFloat = 6
+    static let lineSpacing: CGFloat = 2
+    static let captionSpacing: CGFloat = 4
+    static let shortcutBadgeWidth: CGFloat = 12
+    static let selectedRowOpacity = 0.18
+    static let hoveredRowOpacity = 0.05
 }

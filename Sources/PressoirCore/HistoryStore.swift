@@ -43,7 +43,7 @@ public struct EncryptedHistoryStore: HistoryStore {
         do {
             return try HistoryCodec.decode(SealedFile.read(fileURL, key: key))
         } catch {
-            throw .unreadable("\(fileURL.lastPathComponent): \(error)")
+            throw .unreadable("\(fileURL.lastPathComponent): \(ErrorSummary.of(error))")
         }
     }
 
@@ -52,7 +52,7 @@ public struct EncryptedHistoryStore: HistoryStore {
         do {
             try SealedFile.write(HistoryCodec.encode(history), to: fileURL, key: key)
         } catch {
-            throw .unwritable("\(fileURL.lastPathComponent): \(error)")
+            throw .unwritable("\(fileURL.lastPathComponent): \(ErrorSummary.of(error))")
         }
     }
 }

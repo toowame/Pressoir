@@ -28,15 +28,21 @@ final class ClipboardMonitor {
         let changeCount = pasteboard.changeCount
         guard changeCount != filter.lastChangeCount else { return }
         let types = Set((pasteboard.types ?? []).map(\.rawValue))
-        let (next, kind) = filter.evaluate(changeCount: changeCount, types: types)
+        let source = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+        let (next, kind) = filter.evaluate(changeCount: changeCount, types: types, sourceBundleId: source)
         filter = next
-        if let clip = kind.flatMap(read) { onCapture(clip) }
+        switch kind {
+        case .text: pasteboard.string(forType: .string).map { onCapture(.text($0)) }
+        case .image: PasteboardImageReader.rawData(from: pasteboard).map(captureImage)
+        case nil: break
+        }
     }
 
-    private func read(_ kind: CaptureKind) -> CapturedClip? {
-        switch kind {
-        case .text: pasteboard.string(forType: .string).map(CapturedClip.text)
-        case .image: PasteboardImageReader.read(from: pasteboard).map(CapturedClip.image)
+    /// A large picture takes a noticeable time to decode: never on the main thread.
+    private func captureImage(_ raw: Data) {
+        Task { [weak self] in
+            let image = await Task.detached(priority: .utility) { PasteboardImageReader.decode(raw) }.value
+            if let image { self?.onCapture(.image(image)) }
         }
     }
 }

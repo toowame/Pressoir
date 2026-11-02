@@ -55,7 +55,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 PLIST
 
 echo "› Ad-hoc signing…"
-codesign --force --deep --sign - "$APP"
+# Hardened runtime: no injected libraries, no debugger attach, no unsigned code.
+codesign --force --deep --options runtime --sign - "$APP"
 codesign --verify --verbose=2 "$APP" 2>&1 | sed 's/^/  /'
 
 # State the slices explicitly: a bundle that silently lost its x86_64 half

@@ -4,7 +4,7 @@ struct EmptyHistory: View {
     let isSearching: Bool
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: PanelMetrics.itemSpacing) {
             Icon(.empty).font(.title2).foregroundStyle(.tertiary)
             Text(isSearching ? Labels.noMatch : Labels.emptyTitle).foregroundStyle(.secondary)
             if !isSearching {
@@ -21,6 +21,6 @@ struct KeyHintFooter: View {
             .font(.caption)
             .foregroundStyle(.tertiary)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 6)
+            .padding(.vertical, PanelMetrics.footerVerticalPadding)
     }
 }

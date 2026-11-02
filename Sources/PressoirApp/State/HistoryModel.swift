@@ -2,33 +2,38 @@ import AppKit
 import Observation
 import PressoirCore
 
-/// Application service: applies a command to the history, persists it, and
-/// deletes the image files the history no longer references.
+/// Thin UI-facing wrapper: holds the current history, delegates each change to
+/// the core (`ClipIntake`, `HistoryPersistence`) and caches thumbnails.
+/// `persistence` is nil when the Keychain is unavailable: the history then lives
+/// in memory only.
 @MainActor
 @Observable
 final class HistoryModel {
-    private static let thumbnailMaxPixels: CGFloat = 240
-
     private(set) var history: ClipHistory
-    private let store: any HistoryStore
-    private let imageStore: any ImageStore
+    let vaultStatus: VaultStatus
+    private let images: any ImageStore
     private let intake: ClipIntake
+    private let persistence: HistoryPersistence?
     @ObservationIgnored private var thumbnails: [UUID: NSImage] = [:]
 
-    init(store: any HistoryStore, imageStore: any ImageStore) {
-        self.store = store
-        self.imageStore = imageStore
-        self.intake = ClipIntake(imageStore: imageStore)
-        self.history = Self.loadOrStartEmpty(from: store)
+    init(history: ClipHistory, vaultStatus: VaultStatus, images: any ImageStore, persistence: HistoryPersistence?) {
+        self.history = history
+        self.vaultStatus = vaultStatus
+        self.images = images
+        self.intake = ClipIntake(imageStore: images)
+        self.persistence = persistence
     }
 
     func record(_ clip: CapturedClip) {
         do {
             apply(try intake.ingest(clip, into: history, at: Date()))
         } catch {
-            Log.write("Copie non enregistrée : \(error)")
+            Log.write("Copie non enregistrée : \(ErrorSummary.of(error))")
         }
     }
+
+    /// A pasted entry moves back to the top, as if copied again.
+    func markPasted(_ item: ClipItem) { apply(history.recording(item.content, at: Date())) }
 
     func togglePin(_ id: ClipItem.ID) { apply(history.togglingPin(id)) }
 
@@ -46,17 +51,16 @@ final class HistoryModel {
     /// Decrypted once, then kept in memory as a small thumbnail.
     func thumbnail(for ref: ImageRef) -> NSImage? {
         if let cached = thumbnails[ref.blobId] { return cached }
-        guard let data = imageData(ref), let image = NSImage(data: data) else { return nil }
-        let thumbnail = Self.downscaled(image)
+        guard let thumbnail = imageData(ref).flatMap(ImageThumbnailer.thumbnail) else { return nil }
         thumbnails[ref.blobId] = thumbnail
         return thumbnail
     }
 
     private func imageData(_ ref: ImageRef) -> Data? {
         do {
-            return try imageStore.load(ref.blobId)
+            return try images.load(ref.blobId)
         } catch {
-            Log.write("Image illisible : \(error)")
+            Log.write("Image illisible : \(ErrorSummary.of(error))")
             return nil
         }
     }
@@ -66,29 +70,13 @@ final class HistoryModel {
         history = next
         thumbnails = thumbnails.filter { next.imageBlobIds.contains($0.key) }
         do {
-            try store.save(next)
-            try imageStore.retainOnly(next.imageBlobIds)
+            if let persistence {
+                try persistence.commit(next)
+            } else {
+                try images.retainOnly(next.imageBlobIds)
+            }
         } catch {
-            Log.write("Sauvegarde de l'historique impossible : \(error)")
-        }
-    }
-
-    private static func downscaled(_ image: NSImage) -> NSImage {
-        let scale = min(1, thumbnailMaxPixels / max(image.size.width, image.size.height, 1))
-        let size = NSSize(width: image.size.width * scale, height: image.size.height * scale)
-        return NSImage(size: size, flipped: false) { rect in
-            image.draw(in: rect)
-            return true
-        }
-    }
-
-    private static func loadOrStartEmpty(from store: any HistoryStore) -> ClipHistory {
-        do {
-            return try store.load() ?? ClipHistory()
-        } catch {
-            // A corrupted file must not prevent the app from starting; the cause is logged.
-            Log.write("Lecture de l'historique impossible, départ à vide : \(error)")
-            return ClipHistory()
+            Log.write("Sauvegarde de l'historique impossible : \(ErrorSummary.of(error))")
         }
     }
 }

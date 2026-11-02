@@ -37,17 +37,21 @@ final class HotKey {
         guard !eventHandlerInstalled else { return }
         eventHandlerInstalled = true
         var spec = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        InstallEventHandler(
+        let status = InstallEventHandler(
             GetApplicationEventTarget(),
             { _, event, _ in
                 var hotKeyId = EventHotKeyID()
-                GetEventParameter(
+                let readStatus = GetEventParameter(
                     event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil,
                     MemoryLayout<EventHotKeyID>.size, nil, &hotKeyId)
+                guard readStatus == noErr else { return readStatus }
                 let id = hotKeyId.id
                 // Carbon delivers hot-key events on the main thread.
                 MainActor.assumeIsolated { HotKey.handlers[id]?() }
                 return noErr
             }, 1, &spec, nil, nil)
+        if status != noErr {
+            Log.write("Écoute des raccourcis impossible (OSStatus \(status)) : ⇧⌘V ne répondra pas")
+        }
     }
 }

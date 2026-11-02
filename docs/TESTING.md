@@ -17,3 +17,8 @@ Le domaine (`PressoirCore`) est couvert par `swift test`. La couche système se 
 13. Recopier la même image → elle remonte, pas de doublon.
 14. Copier un fichier dans le Finder → rien n'apparaît.
 15. Supprimer l'image (⌘⌫) → son fichier disparaît de `images/`.
+16. Copier `AKIAIOSFODNN7EXAMPLE` → n'apparaît pas. Copier un mot de passe dans 1Password → n'apparaît pas.
+17. Ouvrir le panneau dans TextEdit, cliquer dans une autre app, puis ↩ dans le panneau → rien n'est collé ailleurs.
+18. Champ mot de passe focalisé (Safari) → ↩ ne colle pas automatiquement.
+19. Refuser l'accès au Trousseau → le menu affiche « Trousseau inaccessible », l'historique existant est intact au lancement suivant.
+

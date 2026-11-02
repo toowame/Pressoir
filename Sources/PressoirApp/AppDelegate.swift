@@ -1,9 +1,12 @@
 import AppKit
 import PressoirCore
 
-/// Composition root: builds every adapter once and wires them together.
+/// Composition root: opens the vault once, builds every adapter and wires them.
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Files and folders created by Pressoir are readable by the user only.
+    private static let privateUmask: mode_t = 0o077
+
     private var model: HistoryModel?
     private var monitor: ClipboardMonitor?
     private var panel: PanelController?
@@ -11,11 +14,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenu: StatusMenu?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let keys = KeychainKeyProvider()
-        let store = EncryptedHistoryStore(fileURL: EncryptedHistoryStore.defaultLocation(), keyProvider: keys)
-        let imageStore = EncryptedImageStore(directory: EncryptedImageStore.defaultDirectory(), keyProvider: keys)
-        Self.migratePlaintextHistory(into: store)
-        let model = HistoryModel(store: store, imageStore: imageStore)
+        umask(Self.privateUmask)
+        let model = Self.openHistory()
         let panel = PanelController(model: model, paster: PastePerformer())
         let monitor = ClipboardMonitor { model.record($0) }
 
@@ -26,14 +26,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.model = model
         self.panel = panel
         self.monitor = monitor
-        Log.write("Pressoir démarré — \(model.history.items.count) éléments chargés")
+        Log.write("Pressoir démarré — \(model.history.items.count) éléments chargés, coffre : \(model.vaultStatus)")
     }
 
-    private static func migratePlaintextHistory(into store: any HistoryStore) {
-        do {
-            try PlaintextHistoryMigration(legacyURL: PlaintextHistoryMigration.defaultLegacyLocation()).run(into: store)
-        } catch {
-            Log.write("Reprise de l'ancien historique en clair impossible : \(error)")
+    private static func openHistory() -> HistoryModel {
+        let historyURL = EncryptedHistoryStore.defaultLocation()
+        let imagesURL = EncryptedImageStore.defaultDirectory()
+        DataFolder.excludeFromBackup(historyURL.deletingLastPathComponent())
+        DataFolder.makePrivate([historyURL.deletingLastPathComponent(), imagesURL])
+        let vault = VaultOpener(historyURL: historyURL, imagesDirectory: imagesURL, keyStore: KeychainKeyStore())
+            .open(at: Date())
+        guard let key = vault.keyProvider else {
+            return HistoryModel(
+                history: vault.history, vaultStatus: vault.status, images: MemoryImageStore(), persistence: nil)
         }
+        let store = EncryptedHistoryStore(fileURL: historyURL, keyProvider: key)
+        let images = EncryptedImageStore(directory: imagesURL, keyProvider: key)
+        return HistoryModel(
+            history: vault.history, vaultStatus: vault.status, images: images,
+            persistence: HistoryPersistence(history: store, images: images))
     }
 }

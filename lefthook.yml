@@ -6,7 +6,9 @@ pre-commit:
       glob: "*.swift"
       run: swift format lint --strict {staged_files}
     build:
-      run: swift build
+      run: swift build -Xswiftc -warnings-as-errors
+    secrets:
+      run: gitleaks git --staged --redact --no-banner
 pre-push:
   commands:
     tests-couverture:
