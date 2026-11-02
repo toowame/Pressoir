@@ -128,7 +128,7 @@ Tout reste sur votre Mac. Pressoir ne fait aucune requête réseau.
 
 Un mot de passe copié depuis une app qui ne le signale pas est enregistré comme n'importe quel texte.
 Supprimez-le avec <kbd>⌘⌫</kbd>, ou **Effacer l'historique** dans le menu. Le raisonnement derrière
-chaque choix est dans [`docs/adr/`](docs/adr).
+chaque choix est dans [`docs/adr/`](docs/adr/README.md).
 
 ## FAQ
 
@@ -201,9 +201,10 @@ Sources/
 
 ## Documentation
 
-- [Décisions d'architecture](docs/adr) : Swift natif, données sensibles, chiffrement, images, durcissement, publication.
+- [Décisions d'architecture](docs/adr/README.md) : Swift natif, données sensibles, chiffrement, images, durcissement, publication.
 - [Recette manuelle](docs/TESTING.md) : les vérifications que les tests unitaires ne couvrent pas.
-- [Feuille de route](docs/TODO-PRESSOIR.md) : raccourci et apps exclues configurables, fichiers du Finder, expiration optionnelle, signature stable.
+- [Changelog](CHANGELOG.md) : les changements de chaque version (en anglais).
+- [Contribuer](CONTRIBUTING.md) : installation, organisation du code, pull requests (en anglais).
 
 Signalez une vulnérabilité via [SECURITY.md](SECURITY.md).
 
