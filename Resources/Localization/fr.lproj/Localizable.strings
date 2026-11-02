@@ -7,8 +7,8 @@
 "row.pin" = "Épingler";
 "row.unpin" = "Désépingler";
 "row.remove" = "Supprimer";
-"row.lineCount" = "%d lignes";
-"row.imageSize" = "Image · %d × %d";
+"row.lineCount" = "%ld lignes";
+"row.imageSize" = "Image · %ld × %ld";
 
 /* Barre de menu */
 "menu.open" = "Ouvrir l'historique";
@@ -19,3 +19,15 @@
 /* Alertes du coffre, en tête du menu */
 "vault.quarantined" = "Ancien historique illisible, mis de côté dans « %@ »";
 "vault.locked" = "Trousseau inaccessible : historique non enregistré";
+
+/* Enregistrement du raccourci */
+"menu.shortcut" = "Raccourci : %@…";
+"shortcut.title" = "Raccourci clavier";
+"shortcut.prompt" = "Tapez le nouveau raccourci";
+"shortcut.hint" = "Utilisez ⌘, ⌃ ou ⌥ avec une touche. Échap annule.";
+"shortcut.reset" = "Revenir à %@";
+"shortcut.cancel" = "Annuler";
+"shortcut.needsModifier" = "Ajoutez ⌘, ⌃ ou ⌥ : une touche seule, ou avec ⇧, se déclencherait en tapant du texte.";
+"shortcut.reserved" = "%@ appartient à macOS et à toutes les apps. Choisissez-en un autre.";
+"shortcut.unnamedKey" = "Cette touche n'est pas utilisable. Choisissez-en une autre.";
+"shortcut.unavailable" = "%@ est déjà utilisé par une autre app. Choisissez-en un autre.";

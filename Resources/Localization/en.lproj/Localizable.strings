@@ -7,8 +7,8 @@
 "row.pin" = "Pin";
 "row.unpin" = "Unpin";
 "row.remove" = "Delete";
-"row.lineCount" = "%d lines";
-"row.imageSize" = "Image · %d × %d";
+"row.lineCount" = "%ld lines";
+"row.imageSize" = "Image · %ld × %ld";
 
 /* Menu bar */
 "menu.open" = "Open History";
@@ -19,3 +19,15 @@
 /* Vault warnings, shown at the top of the menu */
 "vault.quarantined" = "Unreadable history moved aside to “%@”";
 "vault.locked" = "Keychain unavailable: history is not being saved";
+
+/* Shortcut recorder */
+"menu.shortcut" = "Shortcut: %@…";
+"shortcut.title" = "Keyboard Shortcut";
+"shortcut.prompt" = "Press the new shortcut";
+"shortcut.hint" = "Use ⌘, ⌃ or ⌥ with a key. Esc cancels.";
+"shortcut.reset" = "Reset to %@";
+"shortcut.cancel" = "Cancel";
+"shortcut.needsModifier" = "Add ⌘, ⌃ or ⌥: a key alone, or with ⇧, would fire while typing.";
+"shortcut.reserved" = "%@ belongs to macOS and every app. Pick another one.";
+"shortcut.unnamedKey" = "This key can’t be used. Pick another one.";
+"shortcut.unavailable" = "%@ is already used by another app. Pick another one.";

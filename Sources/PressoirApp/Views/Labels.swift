@@ -19,6 +19,25 @@ enum Labels {
     static let menuLaunchAtLogin = text("menu.launchAtLogin")
     static let menuQuit = text("menu.quit")
 
+    static let shortcutTitle = text("shortcut.title")
+    static let shortcutPrompt = text("shortcut.prompt")
+    static let shortcutHint = text("shortcut.hint")
+    static let shortcutCancel = text("shortcut.cancel")
+
+    static func menuShortcut(_ label: String) -> String { format("menu.shortcut", label) }
+
+    static func shortcutReset(_ label: String) -> String { format("shortcut.reset", label) }
+
+    static func shortcutUnavailable(_ label: String) -> String { format("shortcut.unavailable", label) }
+
+    static func shortcutProblem(_ error: ShortcutError, label: String) -> String {
+        switch error {
+        case .needsModifier: text("shortcut.needsModifier")
+        case .reserved: format("shortcut.reserved", label)
+        case .unnamedKey: text("shortcut.unnamedKey")
+        }
+    }
+
     static func lineCount(_ count: Int) -> String { format("row.lineCount", count) }
 
     static func imageSize(width: Int, height: Int) -> String { format("row.imageSize", width, height) }

@@ -24,6 +24,10 @@ final class PanelController {
         if panel?.isVisible == true { close() } else { open() }
     }
 
+    func dismiss() {
+        if panel?.isVisible == true { close() }
+    }
+
     private func open() {
         targetPid = NSWorkspace.shared.frontmostApplication?.processIdentifier
         state.reset()

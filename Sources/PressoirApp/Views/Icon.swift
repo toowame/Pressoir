@@ -10,6 +10,7 @@ enum AppIcon: String {
     case lines = "text.alignleft"
     case empty = "tray"
     case image = "photo"
+    case keyboard = "keyboard"
 }
 
 struct Icon: View {
