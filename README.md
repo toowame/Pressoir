@@ -125,7 +125,7 @@ Everything stays on your Mac. Pressoir makes no network request.
 
 A password copied from an app that does not flag it is recorded like any other text. Delete it with
 <kbd>⌘⌫</kbd>, or use **Effacer l'historique** (clear history) in the menu. The reasoning behind each choice is in
-[`docs/adr/`](docs/adr).
+[`docs/adr/`](docs/adr/README.md).
 
 ## FAQ
 
@@ -203,9 +203,10 @@ Sources/
 
 ## Documentation
 
-- [Architecture decisions](docs/adr): native Swift, sensitive data, encryption, images, hardening, publication.
+- [Architecture decisions](docs/adr/README.md): native Swift, sensitive data, encryption, images, hardening, publication.
 - [Manual test plan](docs/TESTING.md): the checks that unit tests cannot cover.
-- [Roadmap](docs/TODO-PRESSOIR.md): configurable shortcut and excluded apps, Finder files, optional expiry, stable code signing.
+- [Changelog](CHANGELOG.md): what changed in each release.
+- [Contributing](CONTRIBUTING.md): setup, where code goes, pull requests.
 
 Report vulnerabilities through [SECURITY.md](SECURITY.md).
 

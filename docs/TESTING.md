@@ -1,24 +1,52 @@
-# Recette manuelle — PressoirApp
+# Manual test plan
 
-Le domaine (`PressoirCore`) est couvert par `swift test`. La couche système se vérifie à la main :
+`swift test` covers the domain (`PressoirCore`). The system side (pasteboard, shortcut, panel,
+Keychain, Accessibility) is checked by hand before each release, with a fresh build:
 
-1. `Scripts/build-app.sh release native && open Pressoir.app` → icône presse-papier dans la barre de menu, pas d'icône dans le Dock.
-2. Copier 3 textes dans des apps différentes.
-3. Dans TextEdit, ⇧⌘V → le panneau s'ouvre sous la souris, 3 éléments, le plus récent en haut.
-4. Première fois : macOS demande l'Accessibilité → Réglages Système › Confidentialité › Accessibilité › activer Pressoir.
-5. ↓ puis ↩ → le 2ᵉ élément est collé dans TextEdit, le panneau se ferme.
-6. ⌘1 → colle le 1ᵉʳ. Taper un mot → la liste se filtre.
-7. ⌘P sur un élément → épinglé, reste en tête après de nouvelles copies.
-8. Souris près du bord droit / bas de l'écran → le panneau reste entièrement visible.
-9. Cliquer ailleurs ou Échap → le panneau se ferme.
-10. Copier un mot de passe depuis 1Password / Trousseau → absent de l'historique.
-11. Quitter puis relancer → l'historique est conservé ; `strings history.enc` ne montre aucun texte copié.
-12. Capture d'écran dans le presse-papier (⌃⇧⌘4) → vignette + « Image · L × H » ; ↩ la colle dans Aperçu › Nouveau depuis le presse-papier.
-13. Recopier la même image → elle remonte, pas de doublon.
-14. Copier un fichier dans le Finder → rien n'apparaît.
-15. Supprimer l'image (⌘⌫) → son fichier disparaît de `images/`.
-16. Copier `AKIAIOSFODNN7EXAMPLE` → n'apparaît pas. Copier un mot de passe dans 1Password → n'apparaît pas.
-17. Ouvrir le panneau dans TextEdit, cliquer dans une autre app, puis ↩ dans le panneau → rien n'est collé ailleurs.
-18. Champ mot de passe focalisé (Safari) → ↩ ne colle pas automatiquement.
-19. Refuser l'accès au Trousseau → le menu affiche « Trousseau inaccessible », l'historique existant est intact au lancement suivant.
+```bash
+Scripts/build-app.sh release native && open Pressoir.app
+```
 
+## Launch
+
+- [ ] A clipboard icon appears in the menu bar, and no icon appears in the Dock.
+- [ ] Quit and relaunch: the history is still there, and `strings history.enc` shows no copied text.
+
+## Text
+
+- [ ] Copy three texts in different apps, then press <kbd>⇧⌘V</kbd> in TextEdit: the panel opens under
+      the mouse with three entries, the newest on top.
+- [ ] First paste: macOS asks for Accessibility. Enable Pressoir in **System Settings → Privacy &
+      Security → Accessibility**.
+- [ ] <kbd>↓</kbd> then <kbd>↩</kbd>: the second entry is pasted into TextEdit and the panel closes.
+- [ ] <kbd>⌘1</kbd> pastes the first entry. Typing a word filters the list.
+- [ ] <kbd>⌘P</kbd> pins an entry; it stays on top after new copies.
+
+## Panel
+
+- [ ] With the mouse near the right or bottom edge of the screen, the panel stays fully visible.
+- [ ] A click elsewhere or <kbd>Esc</kbd> closes the panel.
+
+## Images
+
+- [ ] A screenshot to the clipboard (<kbd>⌃⇧⌘4</kbd>) shows a thumbnail and "Image · W × H";
+      <kbd>↩</kbd> pastes it into Preview (**File → New from Clipboard**).
+- [ ] Copying the same image again moves it to the top, with no duplicate.
+- [ ] Copying a file in the Finder adds nothing.
+- [ ] Deleting the image (<kbd>⌘⌫</kbd>) removes its file from `images/`.
+
+## Sensitive content
+
+- [ ] A password copied from 1Password or Keychain Access does not appear.
+- [ ] Copying `AKIAIOSFODNN7EXAMPLE` (a sample AWS key) does not add it.
+
+## Guarded paste
+
+- [ ] Open the panel in TextEdit, click into another app, then press <kbd>↩</kbd> in the panel:
+      nothing is pasted elsewhere.
+- [ ] With a password field focused (Safari), <kbd>↩</kbd> does not paste automatically.
+
+## Keychain
+
+- [ ] Deny Keychain access: the menu shows that the history is locked, and the existing history is
+      intact at the next launch.

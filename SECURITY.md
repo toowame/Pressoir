@@ -20,5 +20,5 @@ In scope: anything that exposes clipboard content (on disk, in logs, to other ap
 the encryption or the Keychain key, records content Pressoir claims to skip, or pastes into an app
 other than the one in front when the panel opened.
 
-The design and its known limits are described in [`docs/adr/`](docs/adr), notably
-[0003](docs/adr/0003-historique-chiffre.md) and [0005](docs/adr/0005-durcissement-securite.md).
+The design and its known limits are described in [`docs/adr/`](docs/adr/README.md), notably
+[0003](docs/adr/0003-encrypted-history.md) and [0005](docs/adr/0005-security-hardening.md).
