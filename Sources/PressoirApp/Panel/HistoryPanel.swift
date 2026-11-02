@@ -18,6 +18,8 @@ final class HistoryPanel: NSPanel {
         hasShadow = true
         hidesOnDeactivate = false
         isReleasedWhenClosed = false
+        // Copied texts and thumbnails never show up in screenshots or screen sharing.
+        sharingType = .none
     }
 
     override var canBecomeKey: Bool { true }

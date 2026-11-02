@@ -22,7 +22,7 @@ public struct EncryptedImageStore: ImageStore {
         do {
             try SealedFile.write(data, to: fileURL(for: blobId), key: key)
         } catch {
-            throw .unwritable("image \(blobId.uuidString): \(error)")
+            throw .unwritable("image \(blobId.uuidString): \(ErrorSummary.of(error))")
         }
     }
 
@@ -31,7 +31,7 @@ public struct EncryptedImageStore: ImageStore {
         do {
             return try SealedFile.read(fileURL(for: blobId), key: key)
         } catch {
-            throw .unreadable("image \(blobId.uuidString): \(error)")
+            throw .unreadable("image \(blobId.uuidString): \(ErrorSummary.of(error))")
         }
     }
 
@@ -42,7 +42,7 @@ public struct EncryptedImageStore: ImageStore {
                 try FileManager.default.removeItem(at: file)
             }
         } catch {
-            throw .unwritable("nettoyage des images : \(error)")
+            throw .unwritable("nettoyage des images : \(ErrorSummary.of(error))")
         }
     }
 

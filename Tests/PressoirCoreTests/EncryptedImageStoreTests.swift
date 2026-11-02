@@ -74,3 +74,17 @@ struct EncryptedImageStoreTests {
         #expect(throws: HistoryStoreError.self) { try store.load(UUID()) }
     }
 }
+
+@Suite("Droits des dossiers de données")
+struct DataDirectoryPermissionsTests {
+    @Test("Le dossier créé pour un fichier scellé n'est accessible qu'à l'utilisateur (0700)")
+    func directoryIsPrivate() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("pressoir-perms-\(UUID().uuidString)", isDirectory: true)
+        try EncryptedImageStore(directory: directory, keyProvider: ResolvedKey(.init(size: .bits256)))
+            .save(Data([1]), as: UUID())
+
+        let attributes = try FileManager.default.attributesOfItem(atPath: directory.path)
+        #expect((attributes[.posixPermissions] as? NSNumber)?.intValue == 0o700)
+    }
+}

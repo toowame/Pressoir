@@ -15,16 +15,16 @@ struct ClipRow: View {
     @State private var isHovered = false
 
     var body: some View {
-        HStack(alignment: .center, spacing: 8) {
+        HStack(alignment: .center, spacing: PanelMetrics.itemSpacing) {
             ShortcutBadge(digit: shortcut)
             ClipRowContent(content: item.content, thumbnail: thumbnail)
-            Spacer(minLength: 4)
+            Spacer(minLength: PanelMetrics.captionSpacing)
             RowActions(
                 isPinned: item.isPinned, isVisible: isHovered || isSelected || item.isPinned,
                 onTogglePin: onTogglePin, onRemove: onRemove)
         }
         .padding(.horizontal, PanelMetrics.padding)
-        .padding(.vertical, 7)
+        .padding(.vertical, PanelMetrics.rowVerticalPadding)
         .background(RowBackground(isSelected: isSelected, isHovered: isHovered))
         .contentShape(Rectangle())
         .onHover { isHovered = $0 }
@@ -40,7 +40,7 @@ private struct ShortcutBadge: View {
         Text(digit.map(String.init) ?? " ")
             .font(.caption.monospacedDigit())
             .foregroundStyle(.tertiary)
-            .frame(width: 12)
+            .frame(width: PanelMetrics.shortcutBadgeWidth)
     }
 }
 
@@ -51,7 +51,7 @@ private struct RowActions: View {
     let onRemove: () -> Void
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: PanelMetrics.compactSpacing) {
             IconButton(
                 symbol: isPinned ? .pin : .pinOutline, help: isPinned ? Labels.unpin : Labels.pin,
                 action: onTogglePin
@@ -69,8 +69,11 @@ private struct RowBackground: View {
     let isHovered: Bool
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 7)
-            .fill(isSelected ? Color.accentColor.opacity(0.18) : isHovered ? Color.primary.opacity(0.05) : .clear)
+        RoundedRectangle(cornerRadius: PanelMetrics.rowCornerRadius)
+            .fill(
+                isSelected
+                    ? Color.accentColor.opacity(PanelMetrics.selectedRowOpacity)
+                    : isHovered ? Color.primary.opacity(PanelMetrics.hoveredRowOpacity) : .clear)
     }
 }
 

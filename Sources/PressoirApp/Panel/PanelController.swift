@@ -12,6 +12,8 @@ final class PanelController {
     private let state = PanelState()
     private var panel: HistoryPanel?
     private var keyMonitor: Any?
+    /// The app in front when the panel opened: the only one allowed to receive the paste.
+    private var targetPid: pid_t?
 
     init(model: HistoryModel, paster: PastePerformer) {
         self.model = model
@@ -23,6 +25,7 @@ final class PanelController {
     }
 
     private func open() {
+        targetPid = NSWorkspace.shared.frontmostApplication?.processIdentifier
         state.reset()
         let panel = self.panel ?? makePanel()
         self.panel = panel
@@ -44,7 +47,9 @@ final class PanelController {
 
     private func choose(_ item: ClipItem) {
         close()
-        model.payload(for: item).map(paster.paste)
+        guard let payload = model.payload(for: item) else { return }
+        paster.paste(payload, into: targetPid)
+        model.markPasted(item)
     }
 
     private func visibleItems() -> [ClipItem] {

@@ -27,10 +27,12 @@ public protocol ImageStore: Sendable {
 }
 
 /// Use case: turns a fresh pasteboard capture into the next history, storing an
-/// image's bytes once (a re-copied picture reuses its existing file).
+/// image's bytes once (a re-copied picture reuses its existing file). Recognisable
+/// credentials and oversized content are dropped.
 public struct ClipIntake: Sendable {
-    /// Beyond this, a picture is skipped: the history is for everyday copies.
+    /// Beyond these, a copy is skipped: the history is for everyday copies.
     public static let maxImageBytes = 20 * 1024 * 1024
+    public static let maxTextBytes = 1024 * 1024
 
     private let imageStore: any ImageStore
 
@@ -42,9 +44,14 @@ public struct ClipIntake: Sendable {
         -> ClipHistory
     {
         switch clip {
-        case .text(let text): return history.recording(text, at: date)
+        case .text(let text): return ingestText(text, into: history, at: date)
         case .image(let image): return try ingestImage(image, into: history, at: date)
         }
+    }
+
+    private func ingestText(_ text: String, into history: ClipHistory, at date: Date) -> ClipHistory {
+        guard text.utf8.count <= Self.maxTextBytes, !SecretDetector.looksLikeSecret(text) else { return history }
+        return history.recording(text, at: date)
     }
 
     private func ingestImage(_ image: PasteboardImage, into history: ClipHistory, at date: Date)

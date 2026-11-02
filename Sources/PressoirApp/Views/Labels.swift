@@ -1,3 +1,5 @@
+import PressoirCore
+
 /// Every user-facing string, in one place.
 enum Labels {
     static let searchPlaceholder = "Rechercher dans l'historique"
@@ -17,4 +19,13 @@ enum Labels {
     static func lineCount(_ count: Int) -> String { "\(count) lignes" }
 
     static func imageSize(width: Int, height: Int) -> String { "Image · \(width) × \(height)" }
+
+    /// Shown at the top of the menu when the history could not be opened normally.
+    static func vaultWarning(_ status: VaultStatus) -> String? {
+        switch status {
+        case .ready: nil
+        case .quarantined(let folder): "Ancien historique illisible, mis de côté dans « \(folder.lastPathComponent) »"
+        case .locked: "Trousseau inaccessible : historique non enregistré"
+        }
+    }
 }

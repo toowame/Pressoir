@@ -19,7 +19,7 @@ private struct TextPreview: View {
     let text: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: PanelMetrics.lineSpacing) {
             Text(ClipPreview.line(for: text, maxLength: PanelMetrics.previewLength))
                 .lineLimit(2)
                 .foregroundStyle(.primary)
@@ -35,7 +35,7 @@ private struct LineCountBadge: View {
     var body: some View {
         let lines = ClipPreview.lineCount(of: text)
         if lines > 1 {
-            HStack(spacing: 6) {
+            HStack(spacing: PanelMetrics.compactSpacing) {
                 Icon(.lines)
                 Text(Labels.lineCount(lines))
             }
@@ -50,7 +50,7 @@ private struct ImagePreview: View {
     let thumbnail: NSImage?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: PanelMetrics.captionSpacing) {
             ThumbnailFrame(thumbnail: thumbnail)
             Text(Labels.imageSize(width: ref.pixelWidth, height: ref.pixelHeight))
                 .font(.caption)
