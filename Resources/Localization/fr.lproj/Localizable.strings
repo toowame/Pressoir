@@ -1,0 +1,21 @@
+/* Panneau */
+"search.placeholder" = "Rechercher dans l'historique";
+"empty.title" = "Rien de copié pour l'instant";
+"empty.hint" = "Copiez un texte ou une image (⌘C), il apparaîtra ici.";
+"search.noMatch" = "Aucun résultat";
+"panel.footer" = "↩ coller · ⌘1–9 · ⌘P épingler · ⌘⌫ supprimer";
+"row.pin" = "Épingler";
+"row.unpin" = "Désépingler";
+"row.remove" = "Supprimer";
+"row.lineCount" = "%d lignes";
+"row.imageSize" = "Image · %d × %d";
+
+/* Barre de menu */
+"menu.open" = "Ouvrir l'historique";
+"menu.clear" = "Effacer l'historique (hors épinglés)";
+"menu.launchAtLogin" = "Ouvrir au démarrage";
+"menu.quit" = "Quitter Pressoir";
+
+/* Alertes du coffre, en tête du menu */
+"vault.quarantined" = "Ancien historique illisible, mis de côté dans « %@ »";
+"vault.locked" = "Trousseau inaccessible : historique non enregistré";

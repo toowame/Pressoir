@@ -1,0 +1,21 @@
+/* Panel */
+"search.placeholder" = "Search history";
+"empty.title" = "Nothing copied yet";
+"empty.hint" = "Copy some text or an image (⌘C) and it shows up here.";
+"search.noMatch" = "No results";
+"panel.footer" = "↩ paste · ⌘1–9 · ⌘P pin · ⌘⌫ delete";
+"row.pin" = "Pin";
+"row.unpin" = "Unpin";
+"row.remove" = "Delete";
+"row.lineCount" = "%d lines";
+"row.imageSize" = "Image · %d × %d";
+
+/* Menu bar */
+"menu.open" = "Open History";
+"menu.clear" = "Clear History (Keeps Pinned)";
+"menu.launchAtLogin" = "Launch at Login";
+"menu.quit" = "Quit Pressoir";
+
+/* Vault warnings, shown at the top of the menu */
+"vault.quarantined" = "Unreadable history moved aside to “%@”";
+"vault.locked" = "Keychain unavailable: history is not being saved";

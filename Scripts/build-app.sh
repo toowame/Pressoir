@@ -40,6 +40,8 @@ if LC_ALL=C grep -aq "$HOME" "$APP/Contents/MacOS/Pressoir"; then
   exit 1
 fi
 [ -f "$ROOT/Resources/AppIcon.icns" ] && cp "$ROOT/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
+# One .lproj per interface language; macOS follows the system language.
+cp -R "$ROOT/Resources/Localization/"*.lproj "$APP/Contents/Resources/"
 
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -54,7 +56,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>0.2.1</string>
     <key>CFBundleVersion</key><string>3</string>
-    <key>CFBundleDevelopmentRegion</key><string>fr</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array><string>en</string><string>fr</string></array>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
     <key>LSUIElement</key><true/>
