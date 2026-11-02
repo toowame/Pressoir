@@ -19,4 +19,3 @@
 - [ ] Signature avec un certificat stable (fin des redemandes Trousseau / Accessibilité)
 - [ ] Expiration automatique des éléments non épinglés (option)
 - [ ] Icône d'app (Resources/AppIcon.icns)
-- [ ] Dépôt GitHub + protection de `main` et `dev`
