@@ -57,7 +57,7 @@ It is a native Swift app of about 450 KB with no third-party dependency.
 2. Open it and drag **Pressoir** to **Applications**.
 3. The app is not notarized by Apple, so the first launch is blocked. Right-click Pressoir → **Open**,
    or go to **System Settings → Privacy & Security** and click **Open Anyway**.
-4. A clipboard icon appears in the menu bar. Turn on **Ouvrir au démarrage** (launch at login) from its menu if you like.
+4. A clipboard icon appears in the menu bar. Turn on **Launch at Login** from its menu if you like.
 
 On first use, macOS asks for two permissions:
 
@@ -101,7 +101,7 @@ front.
 
 | Keys                                  | Action                                          |
 | ------------------------------------- | ----------------------------------------------- |
-| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>    | Open / close the history                        |
+| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>    | Open / close the history (change it from the menu) |
 | type                                  | Search (case and accent insensitive, text only) |
 | <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Move, paste                                     |
 | <kbd>⌘1</kbd> … <kbd>⌘9</kbd>          | Paste entry 1 to 9                              |
@@ -124,7 +124,7 @@ Everything stays on your Mac. Pressoir makes no network request.
 - **Quiet log.** `~/Library/Logs/Pressoir.log` records events and error codes, never what you copied.
 
 A password copied from an app that does not flag it is recorded like any other text. Delete it with
-<kbd>⌘⌫</kbd>, or use **Effacer l'historique** (clear history) in the menu. The reasoning behind each choice is in
+<kbd>⌘⌫</kbd>, or use **Clear History** in the menu. The reasoning behind each choice is in
 [`docs/adr/`](docs/adr/README.md).
 
 ## FAQ
@@ -173,9 +173,19 @@ Quit Pressoir, delete the app, then delete `~/Library/Application Support/Presso
 </details>
 
 <details>
-<summary><strong>Is the interface in English?</strong></summary>
+<summary><strong>Can I use another shortcut?</strong></summary>
 
-Not yet: the interface is in French. Localisation contributions are welcome.
+Yes. Click the menu bar icon, choose **Shortcut: ⇧⌘V…** and press the new combination. It needs ⌘, ⌃ or ⌥,
+and combinations that belong to macOS (⌘C, ⌘V, ⇧⌘4…) are refused. If another app already uses it,
+Pressoir says so and keeps the previous one.
+
+</details>
+
+<details>
+<summary><strong>Which languages does the interface speak?</strong></summary>
+
+English and French, following the language of macOS. Translations are welcome: add a folder under
+`Resources/Localization/`.
 
 </details>
 
@@ -203,7 +213,7 @@ Sources/
 
 ## Documentation
 
-- [Architecture decisions](docs/adr/README.md): native Swift, sensitive data, encryption, images, hardening, publication.
+- [Architecture decisions](docs/adr/README.md): native Swift, sensitive data, encryption, images, hardening, publication, shortcut and languages.
 - [Manual test plan](docs/TESTING.md): the checks that unit tests cannot cover.
 - [Changelog](CHANGELOG.md): what changed in each release.
 - [Contributing](CONTRIBUTING.md): setup, where code goes, pull requests.

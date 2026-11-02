@@ -102,7 +102,7 @@ affiche l'historique sous la souris et colle votre choix dans l'app qui était a
 
 | Touches                               | Action                                               |
 | ------------------------------------- | ---------------------------------------------------- |
-| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>    | Ouvrir / fermer l'historique                         |
+| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd>    | Ouvrir / fermer l'historique (modifiable depuis le menu) |
 | taper                                 | Rechercher (sans casse ni accents, textes seulement) |
 | <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Naviguer, coller                                     |
 | <kbd>⌘1</kbd> … <kbd>⌘9</kbd>          | Coller l'élément 1 à 9                               |
@@ -169,6 +169,15 @@ Mac où il a été copié.
 </details>
 
 <details>
+<summary><strong>Je peux choisir un autre raccourci ?</strong></summary>
+
+Oui. Cliquez sur l'icône de la barre de menu, choisissez **Raccourci : ⇧⌘V…** et tapez la nouvelle
+combinaison. Il faut ⌘, ⌃ ou ⌥, et les combinaisons qui appartiennent à macOS (⌘C, ⌘V, ⇧⌘4…) sont
+refusées. Si une autre app l'utilise déjà, Pressoir le signale et garde l'ancien.
+
+</details>
+
+<details>
 <summary><strong>Comment tout supprimer ?</strong></summary>
 
 Quittez Pressoir, supprimez l'app, puis supprimez `~/Library/Application Support/Pressoir/`,
@@ -201,7 +210,7 @@ Sources/
 
 ## Documentation
 
-- [Décisions d'architecture](docs/adr/README.md) : Swift natif, données sensibles, chiffrement, images, durcissement, publication.
+- [Décisions d'architecture](docs/adr/README.md) : Swift natif, données sensibles, chiffrement, images, durcissement, publication, raccourci et langues.
 - [Recette manuelle](docs/TESTING.md) : les vérifications que les tests unitaires ne couvrent pas.
 - [Changelog](CHANGELOG.md) : les changements de chaque version (en anglais).
 - [Contribuer](CONTRIBUTING.md) : installation, organisation du code, pull requests (en anglais).
