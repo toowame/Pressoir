@@ -11,5 +11,6 @@ rewritten when a decision changes; a newer record supersedes the relevant part a
 | [0004](0004-copied-images.md)              | Copied images, one sealed file per image                        | Accepted                        |
 | [0005](0005-security-hardening.md)         | Security hardening: never overwrite, guarded paste, wider filters | Accepted                        |
 | [0006](0006-open-source-release.md)        | Open-source release under a neutral identifier                  | Accepted                        |
+| [0007](0007-shortcut-and-languages.md)     | Configurable shortcut and interface languages                   | Accepted                        |
 
 The records were first written in French and translated when the repository went public.

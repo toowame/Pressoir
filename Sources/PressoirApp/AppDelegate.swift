@@ -12,6 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var hotKey: HotKey?
     private var statusMenu: StatusMenu?
+    private var shortcutRecorder: ShortcutRecorder?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         umask(Self.privateUmask)
@@ -20,8 +21,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let monitor = ClipboardMonitor { model.record($0) }
 
         monitor.start()
-        hotKey = HotKey(shortcut: .openHistory) { panel.toggle() }
-        statusMenu = StatusMenu(model: model, onOpen: { panel.toggle() })
+        let hotKey = HotKey(shortcut: ShortcutPreference.load()) { panel.toggle() }
+        let statusMenu = StatusMenu(
+            model: model, shortcut: hotKey.shortcut, onOpen: { panel.toggle() },
+            onChangeShortcut: { [weak self] in self?.shortcutRecorder?.show() })
+        shortcutRecorder = ShortcutRecorder(
+            hotKey: hotKey, onOpen: { panel.dismiss() }, onChange: { statusMenu.show($0) })
+
+        self.hotKey = hotKey
+        self.statusMenu = statusMenu
 
         self.model = model
         self.panel = panel
