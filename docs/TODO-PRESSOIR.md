@@ -18,4 +18,4 @@
 - [ ] Liste d'apps exclues modifiable dans des réglages (la liste par défaut existe)
 - [ ] Signature avec un certificat stable (fin des redemandes Trousseau / Accessibilité)
 - [ ] Expiration automatique des éléments non épinglés (option)
-- [ ] Icône d'app (Resources/AppIcon.icns)
+- [x] Icône d'app (Resources/AppIcon.icns)
