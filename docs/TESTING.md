@@ -46,6 +46,21 @@ Scripts/build-app.sh release native && open Pressoir.app
       nothing is pasted elsewhere.
 - [ ] With a password field focused (Safari), <kbd>↩</kbd> does not paste automatically.
 
+## Shortcut
+
+- [ ] Menu → **Shortcut: ⇧⌘V…**: the window opens in front, and the history panel closes if it was open.
+- [ ] Press <kbd>⌃⌥K</kbd>: the window closes, the menu shows the new shortcut, and <kbd>⌃⌥K</kbd>
+      opens the history while <kbd>⇧⌘V</kbd> no longer does.
+- [ ] Press <kbd>K</kbd> alone, then <kbd>⌘C</kbd>: each is refused with an explanation, and the
+      window stays open.
+- [ ] <kbd>Esc</kbd> closes the window and keeps the current shortcut.
+- [ ] Quit and relaunch: the chosen shortcut is still active. **Reset to ⇧⌘V** brings the default back.
+
+## Languages
+
+- [ ] With macOS in English the menu and panel are in English; in French they are in French
+      (System Settings → General → Language & Region → Applications → Pressoir).
+
 ## Keychain
 
 - [ ] Deny Keychain access: the menu shows that the history is locked, and the existing history is
